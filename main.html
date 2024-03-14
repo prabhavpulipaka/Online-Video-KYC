@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Verification Form</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="mt-5">KYC Verification Form</h2>
+    <form>
+        <div class="form-group">
+            <label for="idType">select ID type</label>
+            <select class="form-control" id="idType" required>
+              <option value="">Select Identification Type</option>
+              <option value="passport">Passport</option>
+              <option value="driverLicense">Driver's License</option>
+              <option value="aadhaar">Aadhaar Card</option>
+              <option value="pan">PAN Card</option>
+            </select>
+          </div>
+      <div class="form-group">
+        <label for="ID">ID number</label>
+        <input type="text" class="form-control" id="ID" placeholder="Enter your ID" required>
+      </div>
+      <div class="form-group">
+        <label for="idImage">Upload ID front</label>
+        <input type="file" class="form-control-file" id="idImage" accept="image/*" required>
+      </div>
+      <div class="form-group">
+        <label for="idImage">Upload ID back</label>
+        <input type="file" class="form-control-file" id="idImage" accept="image/*" required>
+      </div>
+      <div class="bttn">
+      </div>
+
+    </form>
+  </div>
+
+  <div class="video-wrap" style="margin-left: 160px; margin-top: 30px;">
+    <video id="video" playsinline autoplay>
+    </video>
+  </div>
+  <div class="controller">
+    <button id="snap" style="margin-left: 160px; margin-top: 30px;">Capture</button>
+  </div>
+  <canvas id="canvas" width="300" height="300" style="margin-left: 160px; margin-top: 30px;"></canvas>
+
+
+<script>
+    'use strict';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snap = document.getElementById('snap');
+    const errorMsgElement = document.getElementById('span#ErrorMsg');
+    const constraints ={
+        audio:false,
+        video:{
+            width:300, height:300
+        }
+    };
+    async function init(){
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(constraints)
+            handleSuccess(stream);
+        }
+        catch(e){
+            errorMsgElement.innerHTML = 'navigator.getUserMedia.error:${e.toString()}';
+        }
+    }
+    
+    function handleSuccess(stream){
+        window.stream = stream;
+        video.srcObject = stream;
+    }
+    
+    init();
+    var context = canvas.getContext('2d');
+    snap.addEventListener("click",function(){
+        context.drawImage(video,0,0,300,300)
+        var stream = video.srcObject;
+        var tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+    });
+    </script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
